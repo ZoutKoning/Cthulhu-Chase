@@ -1,8 +1,10 @@
 import pygame, sys
 pygame.init()
 import math
+#window size Originally set to (800,600)
+# background image 1439 pixels wide, 730 pixels high
+display = pygame.display.set_mode((1439, 730))
 
-display = pygame.display.set_mode((800, 600))
 clock = pygame.time.Clock()
 
 class Player:
@@ -37,7 +39,9 @@ display_scroll = [0, 0]
 
 player_bullets = []
 
-bg = pygame.image.load("OneDrive\Desktop\CompSci\cpsc4160\CthulhuChaseBackground.png")
+#BACKGROUND
+# background image size = 1439 pixels wide, 730 pixels high
+bg = pygame.image.load("CthulhuChaseBackground.png")
 
 while True:
     display.blit(bg, (0, 0))
@@ -61,15 +65,26 @@ while True:
     if keys[pygame.K_a]:
         display_scroll[0] -= 5
 
-        #for bullet in player_bullets:
-            #bullet.x += 5
+        for bullet in player_bullets:
+            bullet.x += 5
         
     if keys[pygame.K_d]:
         display_scroll[0] += 5
+        
+        for bullet in player_bullets:
+            bullet.x -= 5
+            
     if keys[pygame.K_w]:
         display_scroll[1] -= 5
+        
+        for bullet in player_bullets:
+            bullet.x += 5
+
     if keys[pygame.K_s]:
         display_scroll[1] += 5
+
+        for bullet in player_bullets:
+            bullet.x -= 5
 
 
     player.main(display)
