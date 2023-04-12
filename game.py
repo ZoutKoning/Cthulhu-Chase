@@ -2,8 +2,10 @@ import pygame, sys
 pygame.init()
 import math
 #window size Originally set to (800,600)
-# background image 1439 pixels wide, 730 pixels high
-display = pygame.display.set_mode((1439, 730))
+#background image 1439 pixels wide, 730 pixels high
+FrameWidth = 1439
+FrameHeight = 730
+display = pygame.display.set_mode((FrameWidth, FrameHeight))
 
 clock = pygame.time.Clock()
 
@@ -16,7 +18,7 @@ class Player:
     def main(self, display):
         pygame.draw.rect(display, (255, 0, 0), (self.x, self.y, self.width, self.height))
 
-
+#Bullets
 class PlayerBullet:
     def __init__(self, x, y, mouse_x, mouse_y):
         self.x = x
@@ -41,14 +43,62 @@ player_bullets = []
 
 #BACKGROUND
 # background image size = 1439 pixels wide, 730 pixels high
-bg = pygame.image.load("CthulhuChaseBackground.png")
+bg = pygame.image.load("CthulhuChaseBackground.png").convert()
+scroll = 0
+tiles = math.ceil(FrameWidth / bg.get_width()) + 1
 
 while True:
-    display.blit(bg, (0, 0))
+    clock.tick(60) #Manages speed of scrolling in pygame
+
+    #display.blit(bg, (0, 0))
     #display.fill((24,168,86))
 
-    mouse_x, mouse_y = pygame.mouse.get_pos()
+
+    #Background (GAME LOOP)
+    #while(player_right == True):
+    # Append image to the back of same image
+    i = 0
+    while(i < tiles):
+        display.blit(bg, (bg.get_width()*i + scroll, 0))
+        i += 1
+    #Frame for scrolling
+    scroll -= 6
+
+    #Reset the scroll Frame
+    if abs(scroll) > bg.get_width():
+        scroll = 0
     
+    # Player movement
+    #Move Left 
+    
+    keys = pygame.key.get_pressed()
+    pygame.draw.rect(display, (255, 255, 255), (100-display_scroll[0], 100-display_scroll[1], 16, 16))
+    
+    if keys[pygame.K_a]:
+        display_scroll[0] -= 5
+        for bullet in player_bullets:
+            bullet.x += 5
+
+    #Move Right    
+    if keys[pygame.K_d]:
+        display_scroll[0] += 5
+        
+        for bullet in player_bullets:
+            bullet.x -= 5
+    #Move Up        
+    if keys[pygame.K_w]:
+        display_scroll[1] -= 5
+        
+        for bullet in player_bullets:
+            bullet.x += 5
+    #Move down
+    if keys[pygame.K_s]:
+        display_scroll[1] += 5
+
+        for bullet in player_bullets:
+            bullet.x -= 5
+    mouse_x, mouse_y = pygame.mouse.get_pos()
+    #END GAME
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             sys.exit()
@@ -58,40 +108,11 @@ while True:
             if event.button == 1:
                 player_bullets.append(PlayerBullet(player.x, player.y, mouse_x, mouse_y))
 
-    keys = pygame.key.get_pressed()
-
-    pygame.draw.rect(display, (255, 255, 255), (100-display_scroll[0], 100-display_scroll[1], 16, 16))
-
-    if keys[pygame.K_a]:
-        display_scroll[0] -= 5
-
-        for bullet in player_bullets:
-            bullet.x += 5
-        
-    if keys[pygame.K_d]:
-        display_scroll[0] += 5
-        
-        for bullet in player_bullets:
-            bullet.x -= 5
-            
-    if keys[pygame.K_w]:
-        display_scroll[1] -= 5
-        
-        for bullet in player_bullets:
-            bullet.x += 5
-
-    if keys[pygame.K_s]:
-        display_scroll[1] += 5
-
-        for bullet in player_bullets:
-            bullet.x -= 5
-
-
+    #Draw player
     player.main(display)
-
+    #Draw bullets
     for bullet in player_bullets:
         bullet.main(display)
-
-    clock.tick(60)
+    
     pygame.display.update()
 
