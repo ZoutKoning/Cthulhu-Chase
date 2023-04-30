@@ -21,10 +21,12 @@ class Player(pygame.sprite.Sprite):
 		self.direction = pygame.math.Vector2(0,0)
 		self.speed = 8
 		self.gravity = 0.8
+		self.glider_gravity = 0.2
 		self.jump_speed = -16
 
 		# player status
 		self.status = 'idle'
+		self.has_glider = True
 		self.facing_right = True
 		self.on_ground = False
 		self.on_ceiling = False
@@ -115,8 +117,19 @@ class Player(pygame.sprite.Sprite):
 				self.status = 'idle'
 
 	def apply_gravity(self):
-		self.direction.y += self.gravity
-		self.rect.y += self.direction.y
+		if(self.has_glider == False):
+			self.direction.y += self.gravity
+			self.rect.y += self.direction.y
+		else:
+			if(self.direction.y < 0):
+				self.direction.y += self.gravity
+				self.rect.y += self.direction.y
+			elif(self.direction.y >= 0 and self.direction.y < 2):
+				self.direction.y += 0.2
+				self.rect.y += self.direction.y
+			else:
+				#self.direction.y += self.gravity
+				self.rect.y += self.direction.y
 
 	def jump(self):
 		self.direction.y = self.jump_speed

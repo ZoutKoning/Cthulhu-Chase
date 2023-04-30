@@ -1,28 +1,26 @@
-import math
 import pygame
-from player import Player
 from support import import_folder
 from pygame.locals import *
 
-class Enemy(pygame.sprite.Sprite):
+class Cultist(pygame.sprite.Sprite):
 
     def __init__(self,pos,surface):
         super().__init__()
         self.import_character_assets()
         self.frame_index = 0
         self.animation_speed = 0.15
-        self.image = self.animations['enemy'][self.frame_index]
+        self.image = self.animations['cultist'][self.frame_index]
         self.rect = self.image.get_rect(topleft = pos)
 
         # player movement
         self.direction = pygame.math.Vector2(0,0)
-        self.speed = 8
+        self.speed = 2
         self.gravity = 0.8
         self.jump_speed = -16
 
         # player status
-        self.status = 'enemy'
-        self.facing_right = True
+        self.status = 'cultist'
+        self.facing_right = False
         self.on_ground = False
         self.on_ceiling = False
         self.on_left = False
@@ -30,7 +28,7 @@ class Enemy(pygame.sprite.Sprite):
 
     def import_character_assets(self):
         character_path = '../graphics/character/'
-        self.animations = {'enemy':[]}
+        self.animations = {'cultist':[]}
 
         for animation in self.animations.keys():
             full_path = character_path + animation
@@ -66,18 +64,13 @@ class Enemy(pygame.sprite.Sprite):
             self.rect = self.image.get_rect(midtop = self.rect.midtop)
 
     def get_status(self):
-        self.status = 'enemy'
+        self.status = 'cultist'
 
     def apply_gravity(self):
         self.direction.y += self.gravity
         self.rect.y += self.direction.y
 
-    def update(self,x_shift, player):
+    def update(self,x_shift):
         self.rect.x += x_shift
-        # Find direction vector (dx, dy) between enemy and player.
-        dirvect = pygame.math.Vector2(player.rect.x - self.rect.x,
-                                      player.rect.y - self.rect.y)
-        dirvect.normalize()
-        # Move along this normalized vector towards the player at current speed.
-        dirvect.scale_to_length(self.speed)
-        self.rect.move_ip(dirvect)
+        self.rect.x += self.speed
+        self.animate()

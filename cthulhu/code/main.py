@@ -6,7 +6,8 @@ from level import Level
 pygame.init()
 screen = pygame.display.set_mode((screen_width,screen_height))
 clock = pygame.time.Clock()
-level = Level(level_map,screen)
+level = Level(level_map1,screen)
+CURRENT_LEVEL = 1
 
 while True:
 	for event in pygame.event.get():
@@ -16,6 +17,19 @@ while True:
 	
 	screen.fill('black')
 	level.run()
+
+	if(CURRENT_LEVEL == 1):
+		if(level.horizontal_enemy_collision()):
+			level = Level(level_map1,screen)
+		if(level.horizontal_goalpost_collision()):
+			level = Level(level_map2, screen)
+			CURRENT_LEVEL+=1
+	elif(CURRENT_LEVEL == 2):
+		if(level.horizontal_enemy_collision()):
+			level = Level(level_map2,screen)
+		if(level.horizontal_goalpost_collision()):
+			level = Level(level_map3, screen)
+			CURRENT_LEVEL+=1
 
 	pygame.display.update()
 	clock.tick(60)

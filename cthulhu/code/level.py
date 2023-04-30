@@ -3,6 +3,10 @@ from tiles import Tile
 from settings import tile_size, screen_width
 from player import Player
 from enemy import Enemy
+from goalpost import Goalpost
+from glider import Glider
+from lava import Lava
+from cultist import Cultist
 from particles import ParticleEffect
 
 class Level:
@@ -43,8 +47,12 @@ class Level:
 
 	def setup_level(self,layout):
 		self.tiles = pygame.sprite.Group()
+		self.lava = pygame.sprite.Group()
 		self.player = pygame.sprite.GroupSingle()
 		self.enemy = pygame.sprite.GroupSingle()
+		self.goalpost = pygame.sprite.GroupSingle()
+		self.cultist = pygame.sprite.GroupSingle()
+		self.glider = pygame.sprite.GroupSingle()
 
 		for row_index,row in enumerate(layout):
 			for col_index,cell in enumerate(row):
@@ -54,12 +62,24 @@ class Level:
 				if cell == 'X':
 					tile = Tile((x,y),tile_size)
 					self.tiles.add(tile)
+				if cell == 'L':
+					lava = Lava((x,y),tile_size)
+					self.lava.add(lava)
 				if cell == 'P':
 					player_sprite = Player((x,y),self.display_surface,self.create_jump_particles)
 					self.player.add(player_sprite)
 				if cell == 'E':
 					enemy_sprite = Enemy((x,y),self.display_surface)
 					self.enemy.add(enemy_sprite)
+				if cell == 'G':
+					goal_sprite = Goalpost((x,y),self.display_surface)
+					self.goalpost.add(goal_sprite)
+				if cell == 'C':
+					cultist_sprite = Cultist((x,y),self.display_surface)
+					self.cultist.add(cultist_sprite)
+				if cell == 'J':
+					glider_sprite = Glider((x,y),self.display_surface)
+					self.glider.add(glider_sprite)
 
 	def scroll_x(self):
 		player = self.player.sprite
@@ -116,6 +136,53 @@ class Level:
 		if player.on_ceiling and player.direction.y > 0.1:
 			player.on_ceiling = False
 
+	
+	def horizontal_enemy_collision(self):
+		player = self.player.sprite
+
+		for sprite in self.enemy.sprites():
+			if sprite.rect.colliderect(player.rect):
+				return True
+			
+		for sprite in self.cultist.sprites():
+			if sprite.rect.colliderect(player.rect):
+				return True
+			
+		for sprite in self.lava.sprites():
+			if sprite.rect.colliderect(player.rect):
+				return True
+
+		return False
+	
+	def horizontal_goalpost_collision(self):
+		player = self.player.sprite
+
+		for sprite in self.goalpost.sprites():
+			if sprite.rect.colliderect(player.rect):
+				return True
+		return False
+	
+	def horizontal_cultist_collision(self):
+		cultist = self.cultist.sprite
+		cultist.rect.x += cultist.direction.x * cultist.speed
+
+		for sprite in self.tiles.sprites():
+			if sprite.rect.colliderect(cultist.rect):
+				cultist.speed*=-1
+				if cultist.facing_right == True:
+					cultist.facing_right = False
+				else:
+					cultist.facing_right = True
+
+	def horizontal_glider_collision(self):
+		player = self.player.sprite
+
+		for sprite in self.glider.sprites():
+			if sprite.rect.colliderect(player.rect):
+				self.player.has_glider = True
+		#self.horizontal_enemy_collision()
+		#self.player.has_glider = False
+
 	def run(self):
 		# dust particles 
 		self.dust_sprite.update(self.world_shift)
@@ -125,6 +192,10 @@ class Level:
 		self.tiles.update(self.world_shift)
 		self.tiles.draw(self.display_surface)
 		self.scroll_x()
+
+		# lava
+		self.lava.update(self.world_shift)
+		self.lava.draw(self.display_surface)
 
 
 		# player
@@ -136,5 +207,21 @@ class Level:
 		self.player.draw(self.display_surface)
 
 		#enemy
-		self.enemy.update(self.world_shift, self.player.sprite)
-		self.enemy.draw(self.display_surface)
+		#self.enemy.update(self.world_shift, self.player.sprite)
+		#self.enemy.draw(self.display_surface)
+		#self.horizontal_enemy_collision()
+
+		#goalpost
+		self.goalpost.update(self.world_shift)
+		self.goalpost.draw(self.display_surface)
+		self.horizontal_goalpost_collision()
+
+		#cultist
+		self.cultist.update(self.world_shift)
+		self.cultist.draw(self.display_surface)
+		self.horizontal_cultist_collision()
+
+		#glider
+		self.glider.update(self.world_shift)
+		self.glider.draw(self.display_surface)
+		self.horizontal_glider_collision()
