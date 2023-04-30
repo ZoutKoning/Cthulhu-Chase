@@ -15,6 +15,7 @@ if(CURRENT_LEVEL == 0 ):
                 'E   XXXX  XXXXXX  XX  XXXX  ',
                 'XXXXXXXX  XXXXXX  XX  XXXX  ']
 
+# Reduce ledge when glider is implemented
 if(CURRENT_LEVEL == 1):
     level_map = [
                 '                                                                                              ',
@@ -34,13 +35,13 @@ if(CURRENT_LEVEL == 2):
                 '                                                                                                     ',
                 '                                                                                                     ',
                 '            XX                                                            XX              XXXXX  XXX ',
-                '                  X                                                      XX              XXXXXX  XXX ',
-                ' XX                  X                                                  XXX    X     X  XXXXXXX  XXX ',
-                ' XXXX                   X         X                              X    XXXXX       X     XXXXXXX  XXX ',
-                ' XXXX         X  X  X  XX        XX                       X           XXXXX  XX         XXXXXXX  XXX ',
-                ' X           XX                 XXX         X   X    X  X     X       XXXXXLLLLLLLLLLLLXXXXXX    XXX ',
-                ' X P  X  X  XXXLLLLLLLLLLLLLLXXXXXXLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLXXXXXXXXXXLLLLLLLLLLLLXXXX  XXXXXX ',
-                'E XXXXXLLXLLXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX   G XXXL',
+                '                  X                                                      XX              XXXXX   XXX ',
+                ' XX    X             X                                                  XXX    X     X  XXXXXX   XXX ',
+                ' XXX                    X         X                              X    XXXXX       X     XXXXXX     X ',
+                ' XXX          X  X  X  XX        XX                       X           XXXXX  XX         XXXXXX     X ',
+                ' X           XX                 XXX         X   X    X  X     X       XXXXXLLLLLLLLLLLLXXXXXXXXLKX X ',
+                ' X P  X  X  XXXLLLLLLLLLLLLLLXXXXXXLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLXXXXXXXXXXLLLLLLLLLLLLXXXXXXXXXX X ',
+                'E XXXXXLLXLLXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX G     XL',
                 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX']#
 
 if(CURRENT_LEVEL == 3):
@@ -56,6 +57,24 @@ if(CURRENT_LEVEL == 3):
                 'X                       XXXLLLLXLLLLXLXXXXXXXXX         XXXXXXXX                      X               ',
                 'X                                                     XXXXXX G   XLLLXLLLLLXLLLLXXLLLLLLLLXLLLLLLLLLLL',
                 'XXXLLLLXLLLLXXLLLLXLLLLXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX']
+
+
+# Big Boss Fight (OPTIONAL)
+if(CURRENT_LEVEL == 4):
+    level_map = [
+                'XXX                                                                                                XXX',
+                'XXX                                                                                                XXX',
+                'XXX                                                                                                XXX',
+                'XXX                                                                                                XXX',
+                'XXX                                                                                                XXX',
+                'XXX                                                                                                XXX',
+                'XXX                                                                                                XXX',
+                'X                                                                                                    X',
+                'X                                                                                                    X',
+                'X                                                                                                    X',
+                'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX']
+
+
 tile_size = 64
 screen_width = 1200
 screen_height = len(level_map) * tile_size
