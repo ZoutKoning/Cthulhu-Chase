@@ -70,7 +70,8 @@ class Cultist(pygame.sprite.Sprite):
         self.direction.y += self.gravity
         self.rect.y += self.direction.y
 
-    def update(self,x_shift):
+    def update(self,x_shift, y_shift):
         self.rect.x += x_shift
+        self.rect.y += y_shift
         self.rect.x += self.speed
         self.animate()

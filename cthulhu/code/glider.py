@@ -59,6 +59,7 @@ class Glider(pygame.sprite.Sprite):
     def get_status(self):
         self.status = 'glider'
 
-    def update(self,x_shift):
+    def update(self,x_shift, y_shift):
         self.rect.x += x_shift
+        self.rect.y += y_shift
         self.animate()

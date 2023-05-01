@@ -1,6 +1,6 @@
 import pygame 
 from tiles import Tile 
-from settings import tile_size, screen_width
+from settings import tile_size, screen_width, screen_height
 from player import Player
 from enemy import Enemy
 from goalpost import Goalpost
@@ -16,8 +16,11 @@ class Level:
 		# level setup
 		self.display_surface = surface 
 		self.setup_level(level_data)
-		self.world_shift = 0
+		self.world_shiftx = 0
 		self.current_x = 0
+
+		self.world_shifty = 0
+		self.current_y = 0
 
 		# dust 
 		self.dust_sprite = pygame.sprite.GroupSingle()
@@ -91,21 +94,36 @@ class Level:
 		player_x = player.rect.centerx
 		direction_x = player.direction.x
 
-		if player_x < screen_width / 4 and direction_x < 0:
-			self.world_shift = 8
+		if player_x < screen_width / 2 and direction_x < 0:
+			self.world_shiftx = 8
 			if player.has_speedup:
-				self.world_shift *= 1.25
+				self.world_shiftx *= 1.25
 			player.speed = 0
-		elif player_x > screen_width - (screen_width / 4) and direction_x > 0:
-			self.world_shift = -8
+		elif player_x > screen_width - (screen_width / 2) and direction_x > 0:
+			self.world_shiftx = -8
 			if player.has_speedup:
-				self.world_shift *= 1.25
+				self.world_shiftx *= 1.25
 			player.speed = 0
 		else:
-			self.world_shift = 0
+			self.world_shiftx = 0
 			player.speed = 8
 			if player.has_speedup:
 				player.speed *= 1.5
+
+	def scroll_y(self):
+		player = self.player.sprite
+		player_y = player.rect.centery
+		direction_y = player.direction.y
+
+		if player_y < screen_height / 8 and direction_y < 0:
+			self.world_shifty = 8
+		elif player_y > screen_height - (screen_width / 8) and direction_y > 0:
+			self.world_shifty = -8
+		else:
+			self.world_shifty = 0
+			#player.speed = 8
+			#if player.has_speedup:
+				#player.speed *= 1.5
 
 	def horizontal_movement_collision(self):
 		player = self.player.sprite
@@ -201,16 +219,17 @@ class Level:
 
 	def run(self):
 		# dust particles 
-		self.dust_sprite.update(self.world_shift)
+		self.dust_sprite.update(self.world_shiftx, self.world_shifty)
 		self.dust_sprite.draw(self.display_surface)
 
 		# level tiles
-		self.tiles.update(self.world_shift)
+		self.tiles.update(self.world_shiftx, self.world_shifty)
 		self.tiles.draw(self.display_surface)
 		self.scroll_x()
+		self.scroll_y()
 
 		# lava
-		self.lava.update(self.world_shift)
+		self.lava.update(self.world_shiftx, self.world_shifty)
 		self.lava.draw(self.display_surface)
 
 
@@ -223,29 +242,29 @@ class Level:
 		self.player.draw(self.display_surface)
 
 		#enemy
-		self.enemy.update(self.world_shift, self.player.sprite)
-		self.enemy.draw(self.display_surface)
-		self.horizontal_enemy_collision()
+		#self.enemy.update(self.world_shiftx, self.world_shifty, self.player.sprite)
+		#self.enemy.draw(self.display_surface)
+		#self.horizontal_enemy_collision()
 
 		#goalpost
-		self.goalpost.update(self.world_shift)
+		self.goalpost.update(self.world_shiftx, self.world_shifty)
 		self.goalpost.draw(self.display_surface)
 		self.horizontal_goalpost_collision()
 
 		#cultist
-		self.cultist.update(self.world_shift)
+		self.cultist.update(self.world_shiftx, self.world_shifty)
 		self.cultist.draw(self.display_surface)
 		if self.cultist.sprites():
 			self.horizontal_cultist_collision()
 
 		#glider
 		if(self.player.sprite.has_glider == False):
-			self.glider.update(self.world_shift)
+			self.glider.update(self.world_shiftx, self.world_shifty)
 			self.glider.draw(self.display_surface)
 			self.horizontal_glider_collision()
 
 		#speed
 		if(self.player.sprite.has_speedup == False):
-			self.speed.update(self.world_shift)
+			self.speed.update(self.world_shiftx, self.world_shifty)
 			self.speed.draw(self.display_surface)
 			self.horizontal_speed_collision()

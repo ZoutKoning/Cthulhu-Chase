@@ -72,8 +72,9 @@ class Enemy(pygame.sprite.Sprite):
         self.direction.y += self.gravity
         self.rect.y += self.direction.y
 
-    def update(self,x_shift, player):
+    def update(self,x_shift, y_shift, player):
         self.rect.x += x_shift
+        self.rect.y += y_shift
         # Find direction vector (dx, dy) between enemy and player.
         dirvect = pygame.math.Vector2(player.rect.x - self.rect.x,
                                       player.rect.y - self.rect.y)

@@ -59,7 +59,8 @@ class Lava(pygame.sprite.Sprite):
     def get_status(self):
         self.status = 'lava'
 
-    def update(self,x_shift):
+    def update(self,x_shift, y_shift):
         self.rect.x += x_shift
+        self.rect.y += y_shift
         self.get_status()
         self.animate()
