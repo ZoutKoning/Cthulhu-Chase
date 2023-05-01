@@ -1,27 +1,18 @@
-import math
 import pygame
-from player import Player
 from support import import_folder
-from pygame.locals import *
 
-class Enemy(pygame.sprite.Sprite):
+class Speed(pygame.sprite.Sprite):
 
     def __init__(self,pos,surface):
         super().__init__()
         self.import_character_assets()
         self.frame_index = 0
         self.animation_speed = 0.15
-        self.image = self.animations['enemy'][self.frame_index]
+        self.image = self.animations['speed'][self.frame_index]
         self.rect = self.image.get_rect(topleft = pos)
 
-        # player movement
-        self.direction = pygame.math.Vector2(0,0)
-        self.speed = 6
-        self.gravity = 0.8
-        self.jump_speed = -16
-
-        # player status
-        self.status = 'enemy'
+   # player status
+        self.status = 'speed'
         self.facing_right = True
         self.on_ground = False
         self.on_ceiling = False
@@ -30,13 +21,13 @@ class Enemy(pygame.sprite.Sprite):
 
     def import_character_assets(self):
         character_path = '../graphics/character/'
-        self.animations = {'enemy':[]}
+        self.animations = {'speed':[]}
 
         for animation in self.animations.keys():
             full_path = character_path + animation
             self.animations[animation] = import_folder(full_path)
 
-    def animate(self, player):
+    def animate(self):
         animation = self.animations[self.status]
 
         # loop over frame index 
@@ -45,7 +36,7 @@ class Enemy(pygame.sprite.Sprite):
             self.frame_index = 0
 
         image = animation[int(self.frame_index)]
-        if player.rect.x > self.rect.x:
+        if self.facing_right:
             self.image = image
         else:
             flipped_image = pygame.transform.flip(image,True,False)
@@ -66,19 +57,8 @@ class Enemy(pygame.sprite.Sprite):
             self.rect = self.image.get_rect(midtop = self.rect.midtop)
 
     def get_status(self):
-        self.status = 'enemy'
+        self.status = 'speed'
 
-    def apply_gravity(self):
-        self.direction.y += self.gravity
-        self.rect.y += self.direction.y
-
-    def update(self,x_shift, player):
+    def update(self,x_shift):
         self.rect.x += x_shift
-        # Find direction vector (dx, dy) between enemy and player.
-        dirvect = pygame.math.Vector2(player.rect.x - self.rect.x,
-                                      player.rect.y - self.rect.y)
-        dirvect.normalize()
-        # Move along this normalized vector towards the player at current speed.
-        dirvect.scale_to_length(self.speed)
-        self.rect.move_ip(dirvect)
-        self.animate(player)
+        self.animate()

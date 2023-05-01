@@ -3,10 +3,10 @@ level_map1 = [
             '                                                                                              ',
             '                                                                                              ',
             ' XX    XXX            XX                                                                      ',
-            ' XX                   J                                            XX                         ',
+            ' XX                                                                XX                         ',
             ' XXXX                 XX                                          XXX                         ',
-            ' XXXX                                     X                      XXXX                         ',
-            ' X             X  XX  XX  X  X  XX       XX                     XXXXX                       G ',
+            ' XXXX             S                       X                      XXXX                         ',
+            ' X          J  X  XX  XX  X  X  XX       XX                     XXXXX                       G ',
             ' X P  X  X  X  XX                    X   XXX   C   X       X    XXXXXXLLLLLLLLLLLLLLLLLXXXXXXX',
             'E XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX',
             'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'] 

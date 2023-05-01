@@ -5,6 +5,7 @@ from player import Player
 from enemy import Enemy
 from goalpost import Goalpost
 from glider import Glider
+from speed import Speed
 from lava import Lava
 from cultist import Cultist
 from particles import ParticleEffect
@@ -53,6 +54,7 @@ class Level:
 		self.goalpost = pygame.sprite.GroupSingle()
 		self.cultist = pygame.sprite.GroupSingle()
 		self.glider = pygame.sprite.GroupSingle()
+		self.speed = pygame.sprite.GroupSingle()
 
 		for row_index,row in enumerate(layout):
 			for col_index,cell in enumerate(row):
@@ -80,6 +82,9 @@ class Level:
 				if cell == 'J':
 					glider_sprite = Glider((x,y),self.display_surface)
 					self.glider.add(glider_sprite)
+				if cell == 'S':
+					speed_sprite = Speed((x,y),self.display_surface)
+					self.speed.add(speed_sprite)
 
 	def scroll_x(self):
 		player = self.player.sprite
@@ -88,13 +93,19 @@ class Level:
 
 		if player_x < screen_width / 4 and direction_x < 0:
 			self.world_shift = 8
+			if player.has_speedup:
+				self.world_shift *= 1.25
 			player.speed = 0
 		elif player_x > screen_width - (screen_width / 4) and direction_x > 0:
 			self.world_shift = -8
+			if player.has_speedup:
+				self.world_shift *= 1.25
 			player.speed = 0
 		else:
 			self.world_shift = 0
 			player.speed = 8
+			if player.has_speedup:
+				player.speed *= 1.5
 
 	def horizontal_movement_collision(self):
 		player = self.player.sprite
@@ -179,9 +190,14 @@ class Level:
 
 		for sprite in self.glider.sprites():
 			if sprite.rect.colliderect(player.rect):
-				self.player.has_glider = True
-		#self.horizontal_enemy_collision()
-		#self.player.has_glider = False
+				player.has_glider = True
+
+	def horizontal_speed_collision(self):
+		player = self.player.sprite
+
+		for sprite in self.speed.sprites():
+			if sprite.rect.colliderect(player.rect):
+				player.has_speedup = True
 
 	def run(self):
 		# dust particles 
@@ -207,9 +223,9 @@ class Level:
 		self.player.draw(self.display_surface)
 
 		#enemy
-		#self.enemy.update(self.world_shift, self.player.sprite)
-		#self.enemy.draw(self.display_surface)
-		#self.horizontal_enemy_collision()
+		self.enemy.update(self.world_shift, self.player.sprite)
+		self.enemy.draw(self.display_surface)
+		self.horizontal_enemy_collision()
 
 		#goalpost
 		self.goalpost.update(self.world_shift)
@@ -219,9 +235,17 @@ class Level:
 		#cultist
 		self.cultist.update(self.world_shift)
 		self.cultist.draw(self.display_surface)
-		self.horizontal_cultist_collision()
+		if self.cultist.sprites():
+			self.horizontal_cultist_collision()
 
 		#glider
-		self.glider.update(self.world_shift)
-		self.glider.draw(self.display_surface)
-		self.horizontal_glider_collision()
+		if(self.player.sprite.has_glider == False):
+			self.glider.update(self.world_shift)
+			self.glider.draw(self.display_surface)
+			self.horizontal_glider_collision()
+
+		#speed
+		if(self.player.sprite.has_speedup == False):
+			self.speed.update(self.world_shift)
+			self.speed.draw(self.display_surface)
+			self.horizontal_speed_collision()

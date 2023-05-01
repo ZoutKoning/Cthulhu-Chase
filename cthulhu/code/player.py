@@ -26,7 +26,8 @@ class Player(pygame.sprite.Sprite):
 
 		# player status
 		self.status = 'idle'
-		self.has_glider = True
+		self.has_glider = False
+		self.has_speedup = False
 		self.facing_right = True
 		self.on_ground = False
 		self.on_ceiling = False
@@ -35,7 +36,7 @@ class Player(pygame.sprite.Sprite):
 
 	def import_character_assets(self):
 		character_path = '../graphics/character/'
-		self.animations = {'idle':[],'run':[],'jump':[],'fall':[]}
+		self.animations = {'idle':[],'run':[],'jump':[],'fall':[], 'player_glider':[]}
 
 		for animation in self.animations.keys():
 			full_path = character_path + animation
@@ -98,6 +99,10 @@ class Player(pygame.sprite.Sprite):
 		elif keys[pygame.K_LEFT]:
 			self.direction.x = -1
 			self.facing_right = False
+		elif keys[pygame.K_DOWN] and self.on_ground == False:
+			self.direction.y += self.gravity
+			self.rect.y += self.direction.y
+			self.direction.x = 0
 		else:
 			self.direction.x = 0
 
@@ -108,8 +113,10 @@ class Player(pygame.sprite.Sprite):
 	def get_status(self):
 		if self.direction.y < 0:
 			self.status = 'jump'
-		elif self.direction.y > 1:
+		elif self.direction.y > 1 and (self.has_glider == False or self.direction.y >= 3):
 			self.status = 'fall'
+		elif self.direction.y > 1 and self.has_glider == True:
+			self.status = 'player_glider'
 		else:
 			if self.direction.x != 0:
 				self.status = 'run'
@@ -128,7 +135,6 @@ class Player(pygame.sprite.Sprite):
 				self.direction.y += 0.2
 				self.rect.y += self.direction.y
 			else:
-				#self.direction.y += self.gravity
 				self.rect.y += self.direction.y
 
 	def jump(self):
