@@ -14,9 +14,9 @@ class Enemy(pygame.sprite.Sprite):
         self.image = self.animations['enemy'][self.frame_index]
         self.rect = self.image.get_rect(topleft = pos)
 
-        # player movement
+        # Enemy movement
         self.direction = pygame.math.Vector2(0,0)
-        self.speed = 6
+        self.speed = 3
         self.gravity = 0.8
         self.jump_speed = -16
 

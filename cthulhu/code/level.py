@@ -109,29 +109,30 @@ class Level:
 			player.speed = 8
 			if player.has_speedup:
 				player.speed *= 1.5
-
+    
 	def scroll_y(self):
 		player = self.player.sprite
 		player_y = player.rect.centery
 		direction_y = player.direction.y
 
-		if player_y < screen_height / 8 and direction_y < 0:
+		if player_y < screen_height / 4 and direction_y < 0:
 			self.world_shifty = 8
-		elif player_y > screen_height - (screen_width / 8) and direction_y > 0:
-			self.world_shifty = -8
+		elif player_y > screen_height - (screen_height / 4) and direction_y > 0:
+			if(player.has_glider and player.on_ground == False):
+				self.world_shifty = -2
+				player.direction.y = 0
+				self.player.sprite.status = 'player_glider'
+			else:
+				self.world_shifty = -8
 		else:
 			self.world_shifty = 0
-			#player.speed = 8
-			#if player.has_speedup:
-				#player.speed *= 1.5
-
+        
 	def horizontal_movement_collision(self):
 		player = self.player.sprite
 		player.rect.x += player.direction.x * player.speed
-
 		for sprite in self.tiles.sprites():
 			if sprite.rect.colliderect(player.rect):
-				if player.direction.x < 0: 
+				if player.direction.x < 0:
 					player.rect.left = sprite.rect.right
 					player.on_left = True
 					self.current_x = player.rect.left
@@ -242,9 +243,9 @@ class Level:
 		self.player.draw(self.display_surface)
 
 		#enemy
-		#self.enemy.update(self.world_shiftx, self.world_shifty, self.player.sprite)
-		#self.enemy.draw(self.display_surface)
-		#self.horizontal_enemy_collision()
+		self.enemy.update(self.world_shiftx, self.world_shifty, self.player.sprite)
+		self.enemy.draw(self.display_surface)
+		self.horizontal_enemy_collision()
 
 		#goalpost
 		self.goalpost.update(self.world_shiftx, self.world_shifty)

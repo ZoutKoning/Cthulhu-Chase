@@ -115,7 +115,7 @@ class Player(pygame.sprite.Sprite):
 			self.status = 'jump'
 		elif self.direction.y > 1 and (self.has_glider == False or self.direction.y >= 3):
 			self.status = 'fall'
-		elif self.direction.y > 1 and self.has_glider == True:
+		elif (self.direction.y > 1 and self.has_glider == True) or (self.has_glider and self.direction.y == 0 and self.on_ground == False):
 			self.status = 'player_glider'
 		else:
 			if self.direction.x != 0:
