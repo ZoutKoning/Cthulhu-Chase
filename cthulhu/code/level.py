@@ -54,8 +54,8 @@ class Level:
 		self.lava = pygame.sprite.Group()
 		self.player = pygame.sprite.GroupSingle()
 		self.enemy = pygame.sprite.GroupSingle()
+		self.cultist = pygame.sprite.Group()
 		self.goalpost = pygame.sprite.GroupSingle()
-		self.cultist = pygame.sprite.GroupSingle()
 		self.glider = pygame.sprite.GroupSingle()
 		self.speed = pygame.sprite.GroupSingle()
 
@@ -109,7 +109,7 @@ class Level:
 			player.speed = 8
 			if player.has_speedup:
 				player.speed *= 1.5
-    
+
 	def scroll_y(self):
 		player = self.player.sprite
 		player_y = player.rect.centery
@@ -122,17 +122,20 @@ class Level:
 				self.world_shifty = -2
 				player.direction.y = 0
 				self.player.sprite.status = 'player_glider'
-			else:
+			elif(player.on_ground == False):
 				self.world_shifty = -8
+			else:
+				self.world_shifty = -50
 		else:
 			self.world_shifty = 0
-        
+
 	def horizontal_movement_collision(self):
 		player = self.player.sprite
 		player.rect.x += player.direction.x * player.speed
+
 		for sprite in self.tiles.sprites():
 			if sprite.rect.colliderect(player.rect):
-				if player.direction.x < 0:
+				if player.direction.x < 0: 
 					player.rect.left = sprite.rect.right
 					player.on_left = True
 					self.current_x = player.rect.left
@@ -193,16 +196,19 @@ class Level:
 		return False
 	
 	def horizontal_cultist_collision(self):
-		cultist = self.cultist.sprite
-		cultist.rect.x += cultist.direction.x * cultist.speed
+		#cultist = self.cultist.sprite
+		#cultist.rect.x += cultist.direction.x * cultist.speed
+		for cultist in self.cultist.sprites():
+			#cultist = self.cultist.sprite
+			cultist.rect.x += cultist.direction.x * cultist.speed
 
-		for sprite in self.tiles.sprites():
-			if sprite.rect.colliderect(cultist.rect):
-				cultist.speed*=-1
-				if cultist.facing_right == True:
-					cultist.facing_right = False
-				else:
-					cultist.facing_right = True
+			for sprite in self.tiles.sprites():
+				if sprite.rect.colliderect(cultist.rect):
+					cultist.speed*=-1
+					if cultist.facing_right == True:
+						cultist.facing_right = False
+					else:
+						cultist.facing_right = True
 
 	def horizontal_glider_collision(self):
 		player = self.player.sprite

@@ -14,9 +14,9 @@ class Enemy(pygame.sprite.Sprite):
         self.image = self.animations['enemy'][self.frame_index]
         self.rect = self.image.get_rect(topleft = pos)
 
-        # Enemy movement
+        # player movement
         self.direction = pygame.math.Vector2(0,0)
-        self.speed = 3
+        self.speed = 5
         self.gravity = 0.8
         self.jump_speed = -16
 
@@ -76,10 +76,10 @@ class Enemy(pygame.sprite.Sprite):
         self.rect.x += x_shift
         self.rect.y += y_shift
         # Find direction vector (dx, dy) between enemy and player.
-        dirvect = pygame.math.Vector2(player.rect.x - self.rect.x,
+        self.direction = pygame.math.Vector2(player.rect.x - self.rect.x,
                                       player.rect.y - self.rect.y)
-        dirvect.normalize()
+        self.direction.normalize()
         # Move along this normalized vector towards the player at current speed.
-        dirvect.scale_to_length(self.speed)
-        self.rect.move_ip(dirvect)
+        self.direction.scale_to_length(self.speed)
+        self.rect.move_ip(self.direction)
         self.animate(player)
